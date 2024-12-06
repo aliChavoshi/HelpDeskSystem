@@ -1,5 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
+
 #nullable disable
 
 using System;
@@ -85,7 +86,8 @@ public class RegisterModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
@@ -98,8 +100,9 @@ public class RegisterModel : PageModel
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-    }
 
+        //TODO
+    }
 
     public async Task OnGetAsync(string returnUrl = null)
     {
@@ -145,6 +148,7 @@ public class RegisterModel : PageModel
                     return LocalRedirect(returnUrl);
                 }
             }
+
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -175,6 +179,7 @@ public class RegisterModel : PageModel
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
+
         return (IUserEmailStore<ApplicationUser>)_userStore;
     }
 }
