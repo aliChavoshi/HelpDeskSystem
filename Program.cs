@@ -1,17 +1,22 @@
 using HelpDeskSystem.Data;
+using HelpDeskSystem.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//Connection to the DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//Add Identity to the Project
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+        options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+//Add MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -25,6 +30,7 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -32,11 +38,11 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.MapRazorPages()
-   .WithStaticAssets();
+    .WithStaticAssets();
 
 app.Run();
