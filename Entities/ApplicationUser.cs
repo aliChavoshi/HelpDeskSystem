@@ -8,6 +8,12 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; }
     public Gender Gender { get; set; }
 
+    #region Relations
+
+    public List<Ticket> Tickets { get; set; }
+
+    #endregion
+
     public string Fullname()
     {
         return FirstName + " " + LastName;
