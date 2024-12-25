@@ -78,7 +78,7 @@ public class RegisterModel : PageModel
         /// </summary>
         [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
+        [Display(Name = "ایمیل")]
         public string Email { get; set; }
 
         /// <summary>
@@ -89,7 +89,7 @@ public class RegisterModel : PageModel
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
             MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "کلمه عبور")]
         public string Password { get; set; }
 
         /// <summary>
@@ -97,11 +97,29 @@ public class RegisterModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "تکرار کلمه عبور")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        //TODO
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "موبایل")]
+        [MinLength(11, ErrorMessage = "شماره موبایل به درستی وارد نشده است")]
+        [MaxLength(11, ErrorMessage = "شماره موبایل به درستی وارد نشده است")]
+        [Required(ErrorMessage = "لطفا مقدار {0}  را وارد کنید")]
+        //[Range(11,11,ErrorMessage = "")]
+        public string MobileNumber { get; set; }
+
+        [Display(Name = "نام")]
+        [Required(ErrorMessage = "لطفا مقدار {0}  را وارد کنید")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "نام خانوادگی")]
+        [Required(ErrorMessage = "لطفا مقدار {0}  را وارد کنید")]
+        public string LastName { get; set; }
+
+        [Display(Name = "جنسیت")]
+        [Required(ErrorMessage = "لطفا مقدار {0}  را وارد کنید")]
+        public Gender Gender { get; set; }
     }
 
     public Task OnGetAsync(string returnUrl = null)
@@ -118,7 +136,12 @@ public class RegisterModel : PageModel
         if (ModelState.IsValid)
         {
             var user = CreateUser();
-
+            //
+            user.PhoneNumber = Input.MobileNumber;
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+            user.Gender = Input.Gender;
+            //
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, Input.Password);
