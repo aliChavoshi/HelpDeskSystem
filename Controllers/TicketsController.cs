@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
+using HelpDeskSystem.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HelpDeskSystem.Controllers;
@@ -56,6 +57,7 @@ public class TicketsController(ApplicationDbContext context) : Controller
     {
         if (ModelState.IsValid)
         {
+            ticket.CreatedById = User.GetId();
             context.Add(ticket);
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
