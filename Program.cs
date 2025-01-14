@@ -1,5 +1,7 @@
+using System.Reflection;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
+using HelpDeskSystem.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +22,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddDefaultUI();
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); //done
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

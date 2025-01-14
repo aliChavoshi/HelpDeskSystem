@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
 using HelpDeskSystem.Extensions;
+using HelpDeskSystem.ViewModels.TicketsDto;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HelpDeskSystem.Controllers;
 
 [Authorize]
-public class TicketsController(ApplicationDbContext context) : Controller
+public class TicketsController(ApplicationDbContext context,IMapper mapper) : Controller
 {
     // GET: Tickets
     public async Task<IActionResult> Index()
@@ -53,12 +55,13 @@ public class TicketsController(ApplicationDbContext context) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Ticket ticket)
+    public async Task<IActionResult> Create(CreateTicketDto ticket)
     {
         if (ModelState.IsValid)
         {
-            ticket.CreatedById = User.GetId();
-            context.Add(ticket);
+            var entity = mapper.Map<Ticket>(ticket); //new
+            entity.CreatedById = User.GetId();
+            context.Add(entity);
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

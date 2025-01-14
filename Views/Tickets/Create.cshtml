@@ -1,5 +1,5 @@
 ﻿@using HelpDeskSystem.Entities
-@model HelpDeskSystem.Entities.Ticket
+@model HelpDeskSystem.ViewModels.TicketsDto.CreateTicketDto
 
 @{
     ViewData["Title"] = "Create";
@@ -48,11 +48,11 @@
             @*     <input asp-for="Version" class="form-control" /> *@
             @*     <span asp-validation-for="Version" class="text-danger"></span> *@
             @* </div> *@
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
+            @* <div class="form-group form-check"> *@
+            @*     <label class="form-check-label"> *@
+            @*         <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive) *@
+            @*     </label> *@
+            @* </div> *@
             @* <div class="form-group form-check"> *@
             @*     <label class="form-check-label"> *@
             @*         <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted) *@
