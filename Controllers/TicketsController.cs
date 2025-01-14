@@ -9,19 +9,20 @@ using Microsoft.EntityFrameworkCore;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
 using HelpDeskSystem.Extensions;
+using HelpDeskSystem.Interfaces;
 using HelpDeskSystem.ViewModels.TicketsDto;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HelpDeskSystem.Controllers;
 
 [Authorize]
-public class TicketsController(ApplicationDbContext context,IMapper mapper) : Controller
+public class TicketsController(IMapper mapper, ITicketRepository ticketRepository)
+    : Controller
 {
     // GET: Tickets
     public async Task<IActionResult> Index()
     {
-        var applicationDbContext = context.Ticket.Include(t => t.CreatedBy);
-        return View(await applicationDbContext.ToListAsync());
+        return View(await ticketRepository.GetAll());
     }
 
     // GET: Tickets/Details/5
@@ -32,9 +33,7 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
             return NotFound();
         }
 
-        var ticket = await context.Ticket
-            .Include(t => t.CreatedBy)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        var ticket = await ticketRepository.GetById(id.Value);
         if (ticket == null)
         {
             return NotFound();
@@ -61,10 +60,10 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
         {
             var entity = mapper.Map<Ticket>(ticket); //new
             entity.CreatedById = User.GetId();
-            context.Add(entity);
-            await context.SaveChangesAsync();
+            await ticketRepository.Create(entity);
             return RedirectToAction(nameof(Index));
         }
+
         // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
         return View(ticket);
     }
@@ -77,12 +76,13 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
             return NotFound();
         }
 
-        var ticket = await context.Ticket.FindAsync(id);
+        var ticket = await ticketRepository.GetById(id.Value);
         if (ticket == null)
         {
             return NotFound();
         }
-        ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
+
+        // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
         return View(ticket);
     }
 
@@ -91,7 +91,8 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Title,Status,Priority,Description,CreatedById,CreatedOn,Version,IsActive,IsDeleted,Id")] Ticket ticket)
+    public async Task<IActionResult> Edit(int id,
+        [Bind("Title,Status,Priority,Description,CreatedById,CreatedOn,Version,IsActive,IsDeleted,Id")] Ticket ticket)
     {
         if (id != ticket.Id)
         {
@@ -102,23 +103,24 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
         {
             try
             {
-                context.Update(ticket);
-                await context.SaveChangesAsync();
+                await ticketRepository.Update(ticket);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TicketExists(ticket.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                // if (!TicketExists(ticket.Id))
+                // {
+                //     return NotFound();
+                // }
+                // else
+                // {
+                //     throw;
+                // }
             }
+
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
+
+        // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
         return View(ticket);
     }
 
@@ -130,9 +132,7 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
             return NotFound();
         }
 
-        var ticket = await context.Ticket
-            .Include(t => t.CreatedBy)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        var ticket = await ticketRepository.GetById(id.Value);
         if (ticket == null)
         {
             return NotFound();
@@ -146,18 +146,12 @@ public class TicketsController(ApplicationDbContext context,IMapper mapper) : Co
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var ticket = await context.Ticket.FindAsync(id);
+        var ticket = await ticketRepository.GetById(id);
         if (ticket != null)
         {
-            context.Ticket.Remove(ticket);
+            await ticketRepository.Delete(ticket);
         }
 
-        await context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool TicketExists(int id)
-    {
-        return context.Ticket.Any(e => e.Id == id);
     }
 }

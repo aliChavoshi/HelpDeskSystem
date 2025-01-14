@@ -1,7 +1,9 @@
 using System.Reflection;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
+using HelpDeskSystem.Interfaces;
 using HelpDeskSystem.Mapping;
+using HelpDeskSystem.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +25,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); //done
+builder.Services.AddScoped<ITicketRepository, TicketRepository>(); //DI
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

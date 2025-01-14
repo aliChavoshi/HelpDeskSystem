@@ -10,7 +10,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         //CreateMap<CreateTicketDto, Ticket>();
-        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly()); //All : IMapFrom
     }
 
     private void ApplyMappingsFromAssembly(Assembly assembly)
@@ -26,7 +26,7 @@ public class MappingProfile : Profile
 
         var types = assembly.GetExportedTypes().Where(t => t.GetInterfaces().Any(HasInterface)).ToList();
 
-        Type[] argumentTypes = { typeof(Profile) };
+        Type[] argumentTypes = [typeof(Profile)];
 
         foreach (var type in types)
         {
@@ -36,7 +36,7 @@ public class MappingProfile : Profile
 
             if (methodInfo != null)
             {
-                methodInfo.Invoke(instance, new object[] { this });
+                methodInfo.Invoke(instance, [this]);
             }
             else
             {
@@ -45,7 +45,7 @@ public class MappingProfile : Profile
                 if (interfaces.Count <= 0) continue;
                 foreach (var interfaceMethodInfo in interfaces.Select(@interface =>
                              @interface.GetMethod(mappingMethodName, argumentTypes)))
-                    interfaceMethodInfo?.Invoke(instance, new object[] { this });
+                    interfaceMethodInfo?.Invoke(instance, [this]);
             }
         }
     }
