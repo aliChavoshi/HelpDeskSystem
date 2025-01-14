@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HelpDeskSystem.Controllers;
 
+[Authorize]
 public class TicketsController(ApplicationDbContext context) : Controller
 {
     // GET: Tickets
@@ -41,7 +43,7 @@ public class TicketsController(ApplicationDbContext context) : Controller
     // GET: Tickets/Create
     public IActionResult Create()
     {
-        ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id");
+        // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id");
         return View();
     }
 
@@ -50,7 +52,7 @@ public class TicketsController(ApplicationDbContext context) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Title,Status,Priority,Description,CreatedById,CreatedOn,Version,IsActive,IsDeleted,Id")] Ticket ticket)
+    public async Task<IActionResult> Create(Ticket ticket)
     {
         if (ModelState.IsValid)
         {
@@ -58,7 +60,7 @@ public class TicketsController(ApplicationDbContext context) : Controller
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
+        // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
         return View(ticket);
     }
 
