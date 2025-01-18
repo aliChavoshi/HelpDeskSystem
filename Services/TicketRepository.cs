@@ -34,7 +34,7 @@ public class TicketRepository(ApplicationDbContext context) : ITicketRepository
 
     public async Task<IReadOnlyList<Ticket>> GetAll()
     {
-        return await context.Ticket.ToListAsync();
+        return await context.Ticket.Include(x=>x.CreatedBy).ToListAsync();
     }
 
     public async Task Save()

@@ -39,7 +39,7 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
             return NotFound();
         }
 
-        return View(ticket);
+        return View(mapper.Map<TicketDetailDto>(ticket));
     }
 
     // GET: Tickets/Create
@@ -83,7 +83,7 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
         }
 
         // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
-        return View(ticket);
+        return View(mapper.Map<EditTicketDto>(ticket));
     }
 
     // POST: Tickets/Edit/5
@@ -91,37 +91,26 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id,
-        [Bind("Title,Status,Priority,Description,CreatedById,CreatedOn,Version,IsActive,IsDeleted,Id")] Ticket ticket)
+    public async Task<IActionResult> Edit(int id, EditTicketDto model)
     {
-        if (id != ticket.Id)
+        if (id != model.Id) return NotFound();
+
+        if (!ModelState.IsValid) return View(model);
+
+        var entity = await ticketRepository.GetById(model.Id); // entity
+        if (entity.Version == model.Version)
         {
-            return NotFound();
+            mapper.Map(model, entity); // model => entity : updated
+            await ticketRepository.Update(entity);
         }
-
-        if (ModelState.IsValid)
+        else
         {
-            try
-            {
-                await ticketRepository.Update(ticket);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // if (!TicketExists(ticket.Id))
-                // {
-                //     return NotFound();
-                // }
-                // else
-                // {
-                //     throw;
-                // }
-            }
-
-            return RedirectToAction(nameof(Index));
+            ModelState.AddModelError("","شخص دیگری این بخش را ویرایش کرده است ");
+            return View(model);
         }
+        
 
-        // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
-        return View(ticket);
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Tickets/Delete/5
