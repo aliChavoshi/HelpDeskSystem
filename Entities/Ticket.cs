@@ -9,6 +9,13 @@ public class Ticket : AuditableEntity
     public TicketStatus Status { get; set; }
     public int Priority { get; set; }
     public string Description { get; set; }
+
+    #region Relations
+
+    public List<Comment> Comments { get; set; }
+
+
+    #endregion
 }
 
 public enum TicketStatus
