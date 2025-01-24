@@ -23,6 +23,7 @@
                     <th>@Html.DisplayNameFor(model => model.Title)</th>
                     <th>@Html.DisplayNameFor(model => model.Status)</th>
                     <th>@Html.DisplayNameFor(model => model.Priority)</th>
+                    <th>Comments</th>
                     <th>@Html.DisplayNameFor(model => model.CreatedOn)</th>
                     <th>@Html.DisplayNameFor(model => model.IsActive)</th>
                     <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
@@ -38,6 +39,7 @@
                         <td>@Html.DisplayFor(modelItem => item.Title)</td>
                         <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td>@Html.DisplayFor(modelItem => item.Priority)</td>
+                        <td>@item.Comments.Count</td>
                         <td>@Html.DisplayFor(modelItem => item.CreatedOn)</td>
                         <td>@Html.DisplayFor(modelItem => item.IsActive)</td>
                         <td>@Html.DisplayFor(modelItem => item.CreatedBy.LastName)</td>

@@ -1,5 +1,12 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-<p> create partial view</p>
+﻿@model HelpDeskSystem.ViewModels.CommentsDto.CreateCommentDto
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <form asp-action="Create" id="form">
+                <input type="hidden" asp-for="TicketId"/>
+                <label asp-for="Description" class="form-label"></label>
+                <textarea required rows="5" class="form-control" placeholder="Please write a new Comment" asp-for="Description"></textarea>
+            </form>
+        </div>
+    </div>
+</div>
