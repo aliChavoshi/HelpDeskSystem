@@ -15,9 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HelpDeskSystem.Controllers;
 
-[Authorize]
 public class TicketsController(IMapper mapper, ITicketRepository ticketRepository)
-    : Controller
+    : AuthorizeBaseController
 {
     // GET: Tickets
     public async Task<IActionResult> Index()
@@ -105,10 +104,10 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
         }
         else
         {
-            ModelState.AddModelError("","شخص دیگری این بخش را ویرایش کرده است ");
+            ModelState.AddModelError("", "شخص دیگری این بخش را ویرایش کرده است ");
             return View(model);
         }
-        
+
 
         return RedirectToAction(nameof(Index));
     }

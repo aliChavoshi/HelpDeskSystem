@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Ticket List";
+    Layout = "_Layout";
     var count = 1;
 }
 
@@ -51,6 +52,9 @@
                             <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-trash"></i> Delete
                             </a>
+                            <a onclick="CraeteComment(@item.Id)" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-comments"></i> Comments
+                            </a>
                         </td>
                     </tr>
                     count++;
@@ -59,3 +63,21 @@
         </table>
     </div>
 </div>
+<partial name="PartialModal"/> 
+@* My Modal *@
+@section Scripts
+{
+    <script>
+        function CraeteComment(ticketId) {
+            $.ajax({
+                url: `/Comments/Create/${ticketId}`,
+                type: 'GET',
+                data: {}
+            }).done(function(result) {
+                $('#exampleModal').modal('show');
+                $('#exampleModalLabel').html('Comments');
+                $('#modalBody').html(result);
+            });
+        }
+    </script>
+}
