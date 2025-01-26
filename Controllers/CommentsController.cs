@@ -12,9 +12,14 @@ namespace HelpDeskSystem.Controllers;
 public class CommentsController(ICommentRepository commentRepository, IMapper mapper) : AuthorizeBaseController
 {
     [HttpGet("{ticketId}")]
-    public IActionResult Create(string ticketId)
+    public async Task<IActionResult> Create(int ticketId)
     {
-        return PartialView(new CreateCommentDto { TicketId = ticketId });
+        var comments = await commentRepository.GetCommentsByTicketId(ticketId);
+        return PartialView(new CreateCommentDto
+        {
+            TicketId = ticketId,
+            CommentsOfTicket = mapper.Map<List<CommentDto>>(comments)
+        });
     }
 
     [HttpPost("{ticketId}")]

@@ -10,6 +10,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     //Entities
     public DbSet<Ticket> Ticket => Set<Ticket>();
+    public DbSet<Comment> Comment => Set<Comment>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

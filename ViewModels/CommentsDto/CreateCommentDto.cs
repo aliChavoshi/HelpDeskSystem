@@ -6,8 +6,9 @@ namespace HelpDeskSystem.ViewModels.CommentsDto;
 
 public class CreateCommentDto : IMapFrom<Comment>
 {
-    public string TicketId { get; set; }
+    public int TicketId { get; set; }
     public string Description { get; set; }
+    public List<CommentDto> CommentsOfTicket { get; set; } = new();
 
     public void Mapping(Profile profile)
     {
