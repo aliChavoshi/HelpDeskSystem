@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using HelpDeskSystem.Helpers
+<!DOCTYPE html>
+<html lang="en" class="h-100">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,55 +8,184 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    @* <link rel="stylesheet" href="~/HelpDeskSystem.styles.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 </head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HelpDeskSystem</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+<body class="d-flex flex-column h-100">
+<main class="d-flex flex-nowrap h-100">
+    <!-- Sidebar -->
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white" style="width: 280px; min-height: 100vh;">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="/" class="d-flex align-items-center mb-3 text-white text-decoration-none">
+                <i class="fas fa-tools fa-2x me-2"></i>
+                <span class="fs-4">HelpDesk</span>
+            </a>
+            <button class="btn btn-link text-white">
+                <i class="fas fa-bars"></i>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                    @if (User.Identity is { IsAuthenticated: true })
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="Index">Tickets</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                        </li>
-                    }
-                </ul>
-                <partial name="_LoginPartial"/>
-            </div>
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
+        @if (User.Identity is { IsAuthenticated: true })
+        {
+            <hr>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2024 - HelpDeskSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a asp-controller="Users" asp-action="Index" class="nav-link text-white @(Url.IsActive("Users", "Index"))">
+                        <i class="fas fa-users me-2"></i>
+                        Users
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Tickets" asp-action="Index" class="nav-link text-white @(Url.IsActive("Tickets", "Index"))">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        Tickets
+                    </a>
+                </li>
+                @* <li> *@
+                @*     <a href="#" class="nav-link text-white"> *@
+                @*         <i class="fas fa-users me-2"></i> *@
+                @*         Users *@
+                @*     </a> *@
+                @* </li> *@
+                @* <li> *@
+                @*     <a href="#" class="nav-link text-white"> *@
+                @*         <i class="fas fa-chart-bar me-2"></i> *@
+                @*         Reports *@
+                @*     </a> *@
+                @* </li> *@
+            </ul>
+
+        }
+        <hr>
+        @if (User.Identity is { IsAuthenticated: true })
+        {
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                    <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>@User.Identity?.Name!</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li>
+                        @* <a  class="nav-link text-dark"  title="Manage">Hello @User.Identity?.Name!</a> *@
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user-cog me-2"></i>Profile</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            @* <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button> *@
+                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Sign out</button>
+                        </form>
+
+                    </li>
+                </ul>
+            </div>
+        }
+        else 
+        {
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" 
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-2x me-2"></i>
+                    <strong>Account</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li>
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 overflow-auto p-4">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </div>
+</main>
+
+<footer class="border-top footer bg-dark text-white mt-auto">
+    <div class="container py-3">
+        &copy; 2024 - HelpDeskSystem
     </div>
 </footer>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        const sidebar = document.querySelector('.bg-dark');
+        sidebar.classList.toggle('collapsed');
+        
+        // مدیریت آیکون منو
+        const toggleIcon = this.querySelector('i');
+        toggleIcon.classList.toggle('fa-bars');
+        toggleIcon.classList.toggle('fa-times');
+        
+        // مدیریت ترانزیشن‌ها
+        if(sidebar.classList.contains('collapsed')) {
+            sidebar.style.width = '60px';
+            setTimeout(() => {
+                sidebar.querySelectorAll('.nav-link span, .fs-4, .dropdown strong, .nav-item i').forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.2s ease';
+                });
+            }, 50);
+        } else {
+            sidebar.style.width = '280px';
+            setTimeout(() => {
+                sidebar.querySelectorAll('.nav-link span, .fs-4, .dropdown strong, .nav-item i').forEach(el => {
+                    el.style.opacity = '1';
+                });
+            }, 200);
+        }
+    });
+</script>
+
+<style>
+    .bg-dark {
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .nav-link span,
+    .fs-4,
+    .dropdown strong {
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .nav-item i {
+        min-width: 20px;
+        text-align: center;
+    }
+    
+    .dropdown-menu {
+        position: absolute !important;
+        left: 100%;
+        top: 0;
+        margin-left: 5px;
+    }
+    
+    .collapsed .dropdown-menu {
+        left: 60px;
+    }
+</style>
+
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
