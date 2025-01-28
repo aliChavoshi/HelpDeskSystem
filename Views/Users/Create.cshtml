@@ -1,0 +1,66 @@
+﻿@using HelpDeskSystem.Entities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model HelpDeskSystem.ViewModels.Users.CreateUserDto
+
+@{
+    ViewData["Title"] = "Create New User";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Create New User</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Enter email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label">Username</label>
+                    <input asp-for="UserName" class="form-control" placeholder="Enter username" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" placeholder="Enter last name" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <select required asp-for="Gender" class="form-control" aria-required="true">
+                        <option value="">جنسیت را انتخاب کنید</option>
+                        @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                        {
+                            <option value="@gender">@gender</option>
+                        }
+                    </select>
+                    <label asp-for="Gender"></label>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-success">Create User</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

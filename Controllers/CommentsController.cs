@@ -3,9 +3,7 @@ using HelpDeskSystem.Entities;
 using HelpDeskSystem.Extensions;
 using HelpDeskSystem.Interfaces;
 using HelpDeskSystem.ViewModels.CommentsDto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace HelpDeskSystem.Controllers;
 
