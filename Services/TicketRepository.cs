@@ -35,8 +35,17 @@ public class TicketRepository(ApplicationDbContext context) : ITicketRepository
     public async Task<IReadOnlyList<Ticket>> GetAll()
     {
         return await context.Ticket
-            .Include(x=>x.CreatedBy)
-            .Include(x=>x.Comments)
+            .Include(x => x.CreatedBy)
+            .Include(x => x.Comments)
+            .ToListAsync();
+    }
+
+    public async Task<List<Ticket>> MyTickets(string currentUserId)
+    {
+        return await context.Ticket
+            .Where(x => x.CreatedById == currentUserId)
+            .Include(x => x.CreatedBy)
+            .Include(x => x.Comments)
             .ToListAsync();
     }
 

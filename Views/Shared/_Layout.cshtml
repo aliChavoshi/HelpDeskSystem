@@ -41,6 +41,12 @@
                         Tickets
                     </a>
                 </li>
+                <li>
+                        <a asp-controller="Tickets" asp-action="MyTickets" class="nav-link text-white @(Url.IsActive("Tickets", "MyTickets"))">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        My Tickets
+                    </a>
+                </li>
                 @* <li> *@
                 @*     <a href="#" class="nav-link text-white"> *@
                 @*         <i class="fas fa-users me-2"></i> *@

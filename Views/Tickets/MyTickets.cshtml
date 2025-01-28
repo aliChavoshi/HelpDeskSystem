@@ -1,0 +1,85 @@
+﻿@model IEnumerable<HelpDeskSystem.Entities.Ticket>
+
+@{
+    ViewData["Title"] = "Ticket List";
+    Layout = "_Layout";
+    var count = 1;
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Ticket List</h1>
+
+    <p>
+        <a class="btn btn-success" asp-action="Create">
+            <i class="fas fa-plus"></i> Add New Ticket
+        </a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>@Html.DisplayNameFor(model => model.Title)</th>
+                    <th>@Html.DisplayNameFor(model => model.Status)</th>
+                    <th>@Html.DisplayNameFor(model => model.Priority)</th>
+                    <th>Comments</th>
+                    <th>@Html.DisplayNameFor(model => model.CreatedOn)</th>
+                    <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+                    <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Priority)</td>
+                        <td>@item.Comments.Count</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreatedOn)</td>
+                        <td>@Html.DisplayFor(modelItem => item.IsActive)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreatedBy.LastName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                            <a onclick="CraeteComment(@item.Id)" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-comments"></i> Comments
+                            </a>
+                        </td>
+                    </tr>
+                    count++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<partial name="PartialModal" />
+@* My Modal *@
+@section Scripts
+{
+    <script>
+        function CraeteComment(ticketId) {
+            $.ajax({
+                url: `/Comments/Create/${ticketId}`,
+                type: 'GET',
+                data: {}
+            }).done(function(result) {
+                $('#exampleModal').modal('show');
+                $('#exampleModalLabel').html('Comments');
+                $('#modalBody').html(result);
+            });
+        }
+    </script>
+}

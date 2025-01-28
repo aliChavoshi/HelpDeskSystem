@@ -24,6 +24,11 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
         return View(await ticketRepository.GetAll());
     }
 
+    public async Task<IActionResult> MyTickets()
+    {
+        return View(await ticketRepository.MyTickets(User.GetId()));
+    }
+
     // GET: Tickets/Details/5
     public async Task<IActionResult> Details(int? id)
     {
