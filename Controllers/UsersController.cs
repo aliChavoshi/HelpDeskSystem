@@ -4,6 +4,7 @@ using HelpDeskSystem.Entities;
 using HelpDeskSystem.ViewModels.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelpDeskSystem.Controllers;
@@ -109,9 +110,42 @@ public class UsersController(
         return View(model);
     }
 
-    public IActionResult CreateUserRole()
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> CreateUserRole(string userId)
     {
-        return View();
+        var user = await context.Users.FindAsync(userId);
+        if (user == null) return NotFound(); // show 404
+        await GetRolesDropDown();
+        return View(new CreateUserRoleViewModel()
+        {
+            UserName = user.UserName,
+            UserId = user.Id
+        });
+    }
+
+    [HttpPost("{userId}")]
+    public async Task<IActionResult> CreateUserRole(CreateUserRoleViewModel model, string userId)
+    {
+        context.UserRoles.Add(new IdentityUserRole<string>()
+        {
+            RoleId = model.RoleId,
+            UserId = model.UserId
+        });
+        if (await context.SaveChangesAsync() > 0)
+        {
+            return RedirectToAction("UserRolesList");
+        }
+        return View(model);
+    }
+
+    private async Task GetRolesDropDown()
+    {
+        var selectListItems = await context.Roles.Select(x => new SelectListItem()
+        {
+            Text = x.Name,
+            Value = x.Id
+        }).ToListAsync();
+        ViewData["Roles"] = new SelectList(selectListItems, "Value", "Text", 0);
     }
 
     #region PrivateMethods
