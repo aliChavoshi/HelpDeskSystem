@@ -28,18 +28,23 @@
             <hr>
 
             <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a asp-controller="Users" asp-action="Index" class="nav-link text-white @(Url.IsActive("Users", "Index"))">
-                        <i class="fas fa-users me-2"></i>
-                        Users
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Users" asp-action="Roles" class="nav-link text-white @(Url.IsActive("Users", "Roles"))">
-                        <i class="fas fa-users me-2"></i>
-                        Roles
-                    </a>
-                </li>
+                
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Users" asp-action="Index" class="nav-link text-white @(Url.IsActive("Users", "Index"))">
+                            <i class="fas fa-users me-2"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Users" asp-action="Roles" class="nav-link text-white @(Url.IsActive("Users", "Roles"))">
+                            <i class="fas fa-users me-2"></i>
+                            Roles
+                        </a>
+                    </li>
+                }
+
                 <li>
                     <a asp-controller="Tickets" asp-action="Index" class="nav-link text-white @(Url.IsActive("Tickets", "Index"))">
                         <i class="fas fa-ticket-alt me-2"></i>
@@ -47,7 +52,7 @@
                     </a>
                 </li>
                 <li>
-                        <a asp-controller="Tickets" asp-action="MyTickets" class="nav-link text-white @(Url.IsActive("Tickets", "MyTickets"))">
+                    <a asp-controller="Tickets" asp-action="MyTickets" class="nav-link text-white @(Url.IsActive("Tickets", "MyTickets"))">
                         <i class="fas fa-ticket-alt me-2"></i>
                         My Tickets
                     </a>
@@ -65,7 +70,6 @@
                 @*     </a> *@
                 @* </li> *@
             </ul>
-
         }
         <hr>
         @if (User.Identity is { IsAuthenticated: true })
@@ -96,10 +100,10 @@
                 </ul>
             </div>
         }
-        else 
+        else
         {
             <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" 
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                    data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle fa-2x me-2"></i>
                     <strong>Account</strong>
