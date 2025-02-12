@@ -34,7 +34,12 @@
                         Users
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a asp-controller="Users" asp-action="Roles" class="nav-link text-white @(Url.IsActive("Users", "Roles"))">
+                        <i class="fas fa-users me-2"></i>
+                        Roles
+                    </a>
+                </li>
                 <li>
                     <a asp-controller="Tickets" asp-action="Index" class="nav-link text-white @(Url.IsActive("Tickets", "Index"))">
                         <i class="fas fa-ticket-alt me-2"></i>

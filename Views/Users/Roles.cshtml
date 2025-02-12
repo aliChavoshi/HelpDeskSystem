@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Roles List";
+    var count = 1;
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <p>
+        <a class="btn btn-success" asp-action="Create">
+            <i class="fas fa-plus"></i> Create New Role
+        </a>
+    </p>
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.NormalizedName)</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.NormalizedName)</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    count++;
+                }
+                </tbody>
+            </table>
+        </div>
+
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+           we don't have any data to show
+        </div>
+    }
+</div>

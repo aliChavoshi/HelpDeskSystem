@@ -22,6 +22,13 @@ public class UsersController(
         return View(users);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Roles()
+    {
+        var roles = await context.Roles.ToListAsync();
+        return View(roles);
+    }
+
     public IActionResult Create()
     {
         return View();
