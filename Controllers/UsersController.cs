@@ -83,20 +83,35 @@ public class UsersController(
         return View(result);
     }
 
-    [HttpGet("{userId}/{roleId}")] 
+    [HttpGet("{userId}/{roleId}")]
     public IActionResult DeleteUserRole(string userId, string roleId)
     {
-        return View();
+        return View(new DeleteUserRoleViewModel()
+        {
+            RoleId = roleId,
+            UserId = userId
+        });
     }
 
-    [HttpPost("{userId}/{roleId}")] //TODO
-    public async Task<IActionResult> DeleteUserRole()
+    [HttpPost("{userId}/{roleId}")]
+    public async Task<IActionResult> DeleteUserRole(DeleteUserRoleViewModel model, string userId, string roleId)
     {
-        //1. DeleteUserRole View Model
-        //2. Delete
-        //3. Succeed Redirect UserRolesList
-        //4. View(model)
-        return RedirectToAction("UserRolesList");
+        context.UserRoles.Remove(new IdentityUserRole<string>()
+        {
+            RoleId = model.RoleId,
+            UserId = model.UserId
+        });
+        if (await context.SaveChangesAsync() > 0)
+        {
+            return RedirectToAction("UserRolesList");
+        }
+
+        return View(model);
+    }
+
+    public IActionResult CreateUserRole()
+    {
+        return View();
     }
 
     #region PrivateMethods
@@ -133,7 +148,6 @@ public class UsersController(
 
         return result;
     }
-
 
     #endregion
 }
