@@ -43,6 +43,12 @@
                             Roles
                         </a>
                     </li>
+                    <li class="nav-item">
+                            <a asp-controller="Users" asp-action="UserRolesList" class="nav-link text-white @(Url.IsActive("Users", "UserRolesList"))">
+                            <i class="fas fa-users me-2"></i>
+                            User Roles
+                        </a>
+                    </li>
                 }
 
                 <li>

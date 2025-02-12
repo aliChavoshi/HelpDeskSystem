@@ -75,4 +75,65 @@ public class UsersController(
 
         return View(model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> UserRolesList()
+    {
+        var result = await GetUserRoles();
+        return View(result);
+    }
+
+    [HttpGet("{userId}/{roleId}")] 
+    public IActionResult DeleteUserRole(string userId, string roleId)
+    {
+        return View();
+    }
+
+    [HttpPost("{userId}/{roleId}")] //TODO
+    public async Task<IActionResult> DeleteUserRole()
+    {
+        //1. DeleteUserRole View Model
+        //2. Delete
+        //3. Succeed Redirect UserRolesList
+        //4. View(model)
+        return RedirectToAction("UserRolesList");
+    }
+
+    #region PrivateMethods
+
+    private async Task<List<UserRolesViewModel>> GetUserRoles()
+    {
+        var userRoles = await context.UserRoles.ToListAsync();
+        //users
+        var users = await context.Users.Where(x =>
+            userRoles.Select(v => v.UserId).Contains(x.Id)).ToListAsync();
+        //roles
+        var roles = await context.Roles.Where(x =>
+            userRoles.Select(v => v.RoleId).Contains(x.Id)).ToListAsync();
+        //result
+        var result = new List<UserRolesViewModel>();
+        foreach (var user in users)
+        {
+            //user Roles
+            var myUserRoles = userRoles.Where(x => x.UserId == user.Id)
+                .Select(x => x.RoleId);
+            //Roles
+            var myRoles = roles.Where(x => myUserRoles.Contains(x.Id));
+            foreach (var role in myRoles)
+            {
+                result.Add(new UserRolesViewModel()
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name,
+                    UserId = user.Id,
+                    UserName = user.UserName
+                });
+            }
+        }
+
+        return result;
+    }
+
+
+    #endregion
 }
