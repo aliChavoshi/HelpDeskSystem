@@ -1,0 +1,30 @@
+﻿@model HelpDeskSystem.ViewModels.Users.RoleViewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Create New Role";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">@ViewData["Title"]</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateRole" method="post">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter enter a new Role" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Create Role</button>
+                <a asp-action="Roles" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -12,7 +12,8 @@ public class UsersController(
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     SignInManager<ApplicationUser> signInManager,
-    ApplicationDbContext context,IMapper mapper)
+    ApplicationDbContext context,
+    IMapper mapper)
     : AuthorizeBaseController
 {
     // GET
@@ -27,6 +28,25 @@ public class UsersController(
     {
         var roles = await context.Roles.ToListAsync();
         return View(roles);
+    }
+
+    [HttpGet]
+    public IActionResult CreateRole()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateRole(RoleViewModel model)
+    {
+        var role = new IdentityRole(model.Name);
+        var result = await roleManager.CreateAsync(role);
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Roles");
+        }
+
+        return View(model);
     }
 
     public IActionResult Create()
@@ -48,10 +68,11 @@ public class UsersController(
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(error.Code,error.Description);
+                ModelState.AddModelError(error.Code, error.Description);
                 return View(model);
             }
         }
+
         return View(model);
     }
 }
