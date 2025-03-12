@@ -24,6 +24,8 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
     // GET: Tickets
     public async Task<IActionResult> Index()
     {
+        var history = await ticketRepository.GetTemporalHistory(3);
+
         if (cache.TryGetValue(Key, out IReadOnlyList<Ticket> tickets)) return View(tickets);
 
         tickets = await ticketRepository.GetAll();

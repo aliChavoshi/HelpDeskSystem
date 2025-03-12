@@ -1,6 +1,7 @@
 ﻿using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
 using HelpDeskSystem.Interfaces;
+using HelpDeskSystem.ViewModels.TicketsDto;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelpDeskSystem.Services;
@@ -57,5 +58,17 @@ public class TicketRepository(ApplicationDbContext context) : ITicketRepository
     public async Task<Ticket> GetById(int id)
     {
         return await context.Ticket.FindAsync(id);
+    }
+
+    public async Task<List<TicketHistory>> GetTemporalHistory(int id)
+    {
+        return await context.Ticket.TemporalAll()
+            .Where(x=>x.Id== id)
+            .Select(x=> new TicketHistory()
+            {
+                From = EF.Property<DateTime>(x,"From").ToLocalTime(),
+                To = EF.Property<DateTime>(x,"To").ToLocalTime(),
+                Title = x.Title
+            } ).ToListAsync();
     }
 }

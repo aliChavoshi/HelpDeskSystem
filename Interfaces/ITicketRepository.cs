@@ -1,4 +1,5 @@
 ﻿using HelpDeskSystem.Entities;
+using HelpDeskSystem.ViewModels.TicketsDto;
 
 namespace HelpDeskSystem.Interfaces;
 
@@ -12,4 +13,5 @@ public interface ITicketRepository
     Task<List<Ticket>> MyTickets(string currentUserId);
     Task Save();
     Task<Ticket> GetById(int id);
+    Task<List<TicketHistory>> GetTemporalHistory(int id);
 }
