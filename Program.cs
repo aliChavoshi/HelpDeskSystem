@@ -1,4 +1,5 @@
-using System.Reflection;
+﻿using System.Reflection;
+using AspNetCoreRateLimit;
 using HelpDeskSystem.Data;
 using HelpDeskSystem.Entities;
 using HelpDeskSystem.Interfaces;
@@ -32,6 +33,22 @@ builder.Services.AddMemoryCache(option =>
 {
     //
 });
+//Rate Limit
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.GeneralRules =
+    [
+        new RateLimitRule
+        {
+            Endpoint = "*", // اعمال محدودیت روی همه مسیرها
+            Limit = 5, // تعداد درخواست مجاز
+            Period = "10s" // در بازه زمانی ۱۰ ثانیه
+        }
+    ];
+});
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); //DI Rate Limit
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -44,6 +61,7 @@ else
     app.UseHsts();
 }
 
+app.UseIpRateLimiting(); // Rate Limit
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

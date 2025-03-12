@@ -12,9 +12,11 @@ using HelpDeskSystem.Extensions;
 using HelpDeskSystem.Interfaces;
 using HelpDeskSystem.ViewModels.TicketsDto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace HelpDeskSystem.Controllers;
+
 
 public class TicketsController(IMapper mapper, ITicketRepository ticketRepository, IMemoryCache cache)
     : AuthorizeBaseController
