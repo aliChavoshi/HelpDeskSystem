@@ -7,6 +7,7 @@ using HelpDeskSystem.Mapping;
 using HelpDeskSystem.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,7 @@ builder.Services.Configure<IpRateLimitOptions>(options =>
 });
 builder.Services.AddInMemoryRateLimiting();
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); //DI Rate Limit
+builder.Services.AddFeatureManagement();
 
 var app = builder.Build();
 

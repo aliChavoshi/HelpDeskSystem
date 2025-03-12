@@ -14,6 +14,8 @@ using HelpDeskSystem.ViewModels.TicketsDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.FeatureManagement.Mvc;
+using HelpDeskSystem.Helpers;
 
 namespace HelpDeskSystem.Controllers;
 
@@ -24,6 +26,7 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
     private const string Key = "Tickets";
 
     // GET: Tickets
+    [FeatureGate(nameof(FeatureFlags.DisableTicket))]
     public async Task<IActionResult> Index()
     {
         var history = await ticketRepository.GetTemporalHistory(3);
