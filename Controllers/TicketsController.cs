@@ -12,16 +12,32 @@ using HelpDeskSystem.Extensions;
 using HelpDeskSystem.Interfaces;
 using HelpDeskSystem.ViewModels.TicketsDto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HelpDeskSystem.Controllers;
 
-public class TicketsController(IMapper mapper, ITicketRepository ticketRepository)
+public class TicketsController(IMapper mapper, ITicketRepository ticketRepository, IMemoryCache cache)
     : AuthorizeBaseController
 {
+    private const string Key = "Tickets";
+
     // GET: Tickets
     public async Task<IActionResult> Index()
     {
-        return View(await ticketRepository.GetAll());
+        if (cache.TryGetValue(Key, out IReadOnlyList<Ticket> tickets)) return View(tickets);
+
+        tickets = await ticketRepository.GetAll();
+
+        if (tickets is { Count: > 0 }) // بررسی مقدار معتبر
+        {
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10)) // افزایش زمان نگهداری
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+            cache.Set(Key, tickets, cacheEntryOptions);
+        }
+
+        return View(tickets);
     }
 
     public async Task<IActionResult> MyTickets()
@@ -32,16 +48,10 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
     // GET: Tickets/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
         var ticket = await ticketRepository.GetById(id.Value);
-        if (ticket == null)
-        {
-            return NotFound();
-        }
+        if (ticket == null) return NotFound();
 
         return View(mapper.Map<TicketDetailDto>(ticket));
     }
@@ -75,16 +85,10 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
     // GET: Tickets/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
         var ticket = await ticketRepository.GetById(id.Value);
-        if (ticket == null)
-        {
-            return NotFound();
-        }
+        if (ticket == null) return NotFound();
 
         // ViewData["CreatedById"] = new SelectList(context.Users, "Id", "Id", ticket.CreatedById);
         return View(mapper.Map<EditTicketDto>(ticket));
@@ -120,30 +124,22 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
     // GET: Tickets/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
         var ticket = await ticketRepository.GetById(id.Value);
-        if (ticket == null)
-        {
-            return NotFound();
-        }
+        if (ticket == null) return NotFound();
 
         return View(ticket);
     }
 
     // POST: Tickets/Delete/5
-    [HttpPost, ActionName("Delete")]
+    [HttpPost]
+    [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var ticket = await ticketRepository.GetById(id);
-        if (ticket != null)
-        {
-            await ticketRepository.Delete(ticket);
-        }
+        if (ticket != null) await ticketRepository.Delete(ticket);
 
         return RedirectToAction(nameof(Index));
     }

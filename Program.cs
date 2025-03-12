@@ -28,6 +28,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); //done
 builder.Services.AddScoped<ITicketRepository, TicketRepository>(); //DI
 builder.Services.AddScoped<ICommentRepository, CommentRepository>(); //DI
+builder.Services.AddMemoryCache(option =>
+{
+    //
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
