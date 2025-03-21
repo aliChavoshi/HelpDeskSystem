@@ -19,21 +19,24 @@ using HelpDeskSystem.Helpers;
 
 namespace HelpDeskSystem.Controllers;
 
-
-public class TicketsController(IMapper mapper, ITicketRepository ticketRepository, IMemoryCache cache)
+public class TicketsController(
+    IMapper mapper,
+    ITicketRepository ticketRepository,
+    IMemoryCache cache,
+    ApplicationDbContext context)
     : AuthorizeBaseController
 {
     private const string Key = "Tickets";
 
     // GET: Tickets
-    [FeatureGate(nameof(FeatureFlags.DisableTicket))]
+    // [FeatureGate(nameof(FeatureFlags.DisableTicket))]
     public async Task<IActionResult> Index()
     {
-        var history = await ticketRepository.GetTemporalHistory(3);
+        //var history = await ticketRepository.GetTemporalHistory(3);
+        // if (cache.TryGetValue(Key, out IReadOnlyList<Ticket> tickets)) return View(tickets);
 
-        if (cache.TryGetValue(Key, out IReadOnlyList<Ticket> tickets)) return View(tickets);
-
-        tickets = await ticketRepository.GetAll();
+        var tickets = await ticketRepository.GetAll();
+        return View(tickets);
 
         if (tickets is { Count: > 0 }) // بررسی مقدار معتبر
         {
@@ -43,8 +46,6 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
 
             cache.Set(Key, tickets, cacheEntryOptions);
         }
-
-        return View(tickets);
     }
 
     public async Task<IActionResult> MyTickets()
@@ -117,6 +118,9 @@ public class TicketsController(IMapper mapper, ITicketRepository ticketRepositor
         {
             mapper.Map(model, entity); // model => entity : updated
             await ticketRepository.Update(entity);
+            // await context.Ticket.ExecuteUpdateAsync(x =>
+            //     x.SetProperty(c => c.Priority, 2)
+            //         .SetProperty(c=>c.Status,TicketStatus.Close));
         }
         else
         {

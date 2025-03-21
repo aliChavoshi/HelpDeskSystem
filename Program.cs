@@ -16,8 +16,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    // options.UseQueryTrackingBehavior()
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, opt =>
+    {
+        opt.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+    }));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         options.SignIn.RequireConfirmedAccount = true)
@@ -35,20 +37,20 @@ builder.Services.AddMemoryCache(option =>
     //
 });
 //Rate Limit
-builder.Services.Configure<IpRateLimitOptions>(options =>
-{
-    options.GeneralRules =
-    [
-        new RateLimitRule
-        {
-            Endpoint = "*", // اعمال محدودیت روی همه مسیرها
-            Limit = 5, // تعداد درخواست مجاز
-            Period = "10s" // در بازه زمانی ۱۰ ثانیه
-        }
-    ];
-});
-builder.Services.AddInMemoryRateLimiting();
-builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); //DI Rate Limit
+// builder.Services.Configure<IpRateLimitOptions>(options =>
+// {
+//     options.GeneralRules =
+//     [
+//         new RateLimitRule
+//         {
+//             Endpoint = "*", // اعمال محدودیت روی همه مسیرها
+//             Limit = 5, // تعداد درخواست مجاز
+//             Period = "10s" // در بازه زمانی ۱۰ ثانیه
+//         }
+//     ];
+// });
+// builder.Services.AddInMemoryRateLimiting();
+// builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>(); //DI Rate Limit
 builder.Services.AddFeatureManagement();
 
 var app = builder.Build();
@@ -63,7 +65,7 @@ else
     app.UseHsts();
 }
 
-app.UseIpRateLimiting(); // Rate Limit
+// app.UseIpRateLimiting(); // Rate Limit
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

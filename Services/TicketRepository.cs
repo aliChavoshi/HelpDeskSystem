@@ -35,9 +35,14 @@ public class TicketRepository(ApplicationDbContext context) : ITicketRepository
 
     public async Task<IReadOnlyList<Ticket>> GetAll()
     {
+        //Ali => 1 Comment
+        //Ali => 2 Comment
+        //Ali => 3 Comment
         return await context.Ticket
             .Include(x => x.CreatedBy)
             .Include(x => x.Comments)
+            .TagWith("My Tickets : ")
+            // .AsSplitQuery()
             .ToListAsync();
     }
 
